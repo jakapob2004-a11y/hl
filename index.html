@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>โปรแกรมคำนวณก๊าซเรือนกระจก - รายเดือน</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Sarabun', 'Segoe UI', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 30px;
+    }
+
+    .month-selector {
+      background: #e3f2fd;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .month-selector label {
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .month-selector select {
+      padding: 8px 12px;
+      border: 2px solid #1976d2;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+      cursor: pointer;
+    }
+
+    h2, h3 {
+      margin: 20px 0 15px;
+      color: #333;
+    }
+
+    .scope-section {
+      margin: 25px 0;
+    }
+
+    .scope-title {
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border-left: 4px solid #1976d2;
+      font-size: 18px;
+      font-weight: bold;
+      color: #1565c0;
+    }
+
+    .scope-title.scope2 {
+      background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+      border-left-color: #f57c00;
+      color: #e65100;
+    }
+
+    .scope-title.scope3 {
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      border-left-color: #388e3c;
+      color: #2e7d32;
+    }
+
+    fieldset {
+      margin: 15px 0;
+      padding: 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      background: #fafafa;
+      transition: all 0.3s;
+    }
+
+    fieldset:hover {
+      border-color: #1976d2;
+      background: #f5f9ff;
+    }
+
+    legend {
+      font-weight: bold;
+      padding: 0 10px;
+      color: #1976d2;
+      font-size: 16px;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    input, select {
+      padding: 10px 15px;
+      width: 100%;
+      max-width: 350px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #1976d2;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+    }
+
+    input::placeholder {
+      color: #999;
+    }
+
+    .add-button {
+      margin: 30px 0;
+      text-align: center;
+    }
+
+    button {
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      font-family: inherit;
+    }
+
+    #addMonthBtn {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: white;
+      min-width: 250px;
+    }
+
+    #addMonthBtn:hover {
+      background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .result {
+      margin-top: 30px;
+    }
+
+    .note {
+      background: #fff9c4;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #fbc02d;
+      margin-top: 30px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .note strong {
+      color: #f57f17;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .header h1 {
+        font-size: 22px;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      input, select {
+        max-width: 100%;
+      }
+
+      .month-selector {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .month-selector select {
+        width: 100%;
+      }
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result > div {
+      animation: fadeIn 0.5s ease-out;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>🌍 โปรแกรมคำนวณการปล่อยก๊าซเรือนกระจก (รายเดือน)</h1>
+      <p>คำนวณและเปรียบเทียบการปล่อยก๊าซเรือนกระจกแบบรายเดือน (Scope 1, 2, 3)</p>
+    </div>
+
+    <div class="content">
+      
+      <!-- เลือกเดือน/ปี -->
+      <div class="month-selector">
+        <label for="monthInput">📅 เลือกเดือน:</label>
+        <select id="monthInput">
+          <option value="">-- เลือกเดือน --</option>
+        </select>
+
+        <label for="yearInput">📆 เลือกปี (พ.ศ.):</label>
+        <select id="yearInput">
+          <option value="">-- เลือกปี --</option>
+        </select>
+      </div>
+
+      <!-- SCOPE 1 -->
+      <div class="scope-section">
+        <div class="scope-title">🔴 Scope 1: การปล่อยโดยตรง (Direct Emissions)</div>
+
+        <fieldset>
+          <legend>🚗 1. ยานพาหนะรับส่งนักเรียน</legend>
+
+          <label for="fuelType">ชนิดน้ำมันเชื้อเพลิง:</label>
+          <select id="fuelType">
+            <option value="diesel">ดีเซล (Diesel)</option>
+            <option value="gasoline">เบนซิน (Gasoline)</option>
+            <option value="gasohol95">แก๊สโซฮอล์ 95</option>
+            <option value="gasohol91">แก๊สโซฮอล์ 91</option>
+          </select>
+
+          <label for="fuelAmount">ปริมาณการใช้น้ำมัน (ลิตร):</label>
+          <input id="fuelAmount" type="number" min="0" step="0.01" placeholder="เช่น 5000">
+        </fieldset>
+
+        <fieldset>
+          <legend>🔥 2. การใช้ก๊าซหุงต้ม (LPG)</legend>
+          <label for="lpgAmount">ปริมาณก๊าซหุงต้ม (กก.):</label>
+          <input id="lpgAmount" type="number" min="0" step="0.01" placeholder="เช่น 200">
+        </fieldset>
+
+        <fieldset>
+          <legend>💧 3. ปริมาณน้ำเสีย</legend>
+          <label for="wastewaterAmount">ปริมาณน้ำเสีย (ลูกบาศก์เมตร):</label>
+          <input id="wastewaterAmount" type="number" min="0" step="0.01" placeholder="เช่น 1000">
+        </fieldset>
+      </div>
+
+      <!-- SCOPE 2 -->
+      <div class="scope-section">
+        <div class="scope-title scope2">🟡 Scope 2: การใช้พลังงานไฟฟ้าที่ซื้อมา (Indirect Emissions)</div>
+
+        <fieldset>
+          <legend>⚡ 4. การใช้ไฟฟ้า</legend>
+          <label for="electricityAmount">ปริมาณการใช้ไฟฟ้า (kWh):</label>
+          <input id="electricityAmount" type="number" min="0" step="0.01" placeholder="เช่น 50000">
+        </fieldset>
+      </div>
+
+      <!-- SCOPE 3 -->
+      <div class="scope-section">
+        <div class="scope-title scope3">🟢 Scope 3: การปล่อยทางอ้อมอื่น ๆ (Other Indirect Emissions)</div>
+
+        <fieldset>
+          <legend>🚰 5. การใช้น้ำประปา</legend>
+          <label for="waterAmount">ปริมาณการใช้น้ำประปา (ลูกบาศก์เมตร):</label>
+          <input id="waterAmount" type="number" min="0" step="0.01" placeholder="เช่น 2000">
+        </fieldset>
+
+        <fieldset>
+          <legend>📄 6. การใช้กระดาษ</legend>
+          <label for="paperAmount">ปริมาณกระดาษที่ใช้ (กก.):</label>
+          <input id="paperAmount" type="number" min="0" step="0.01" placeholder="เช่น 300">
+        </fieldset>
+
+        <fieldset>
+          <legend>🗑️ 7. การจัดการขยะทั่วไป</legend>
+          <label for="wasteAmount">ปริมาณขยะ (กก.):</label>
+          <input id="wasteAmount" type="number" min="0" step="0.01" placeholder="เช่น 1000">
+        </fieldset>
+      </div>
+
+      <!-- ปุ่มเพิ่มข้อมูล -->
+      <div class="add-button">
+        <button id="addMonthBtn">➕ เพิ่มข้อมูลรายเดือน</button>
+      </div>
+
+      <!-- ผลลัพธ์ -->
+      <div id="output" class="result"></div>
+
+      <!-- หมายเหตุ -->
+      <div class="note">
+        <strong>⚠️ หมายเหตุ:</strong> 
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>กรอกข้อมูลการใช้งานในแต่ละเดือน แล้วกดปุ่ม "เพิ่มข้อมูลรายเดือน"</li>
+          <li>สามารถเพิ่มข้อมูลหลายเดือนเพื่อเปรียบเทียบได้</li>
+          <li>กราฟจะแสดงการเปรียบเทียบระหว่างเดือนต่าง ๆ</li>
+          <li>ค่า Emission Factor เป็นค่าประมาณ ควรปรับให้ตรงกับมาตรฐานที่ใช้งานจริง</li>
+        </ul>
+        <br>
+        <strong>📚 แหล่งข้อมูลอ้างอิง:</strong>
+        <ul style="margin-top: 5px; padding-left: 20px;">
+          <li>TGO - Thailand Greenhouse Gas Management Organization</li>
+          <li>IPCC - Intergovernmental Panel on Climate Change</li>
+          <li>GHG Protocol</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
